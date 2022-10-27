@@ -44,22 +44,21 @@ const Chart = () => {
 
   const {chartData,setChartData} = useContext(ChartContext)
 
-  const {rates:{USD,CAD,GBP,AED,EUR}} = chartData
+  const {USD,CAD,GBP,AED,EUR} = chartData?.rates
   const data = {
     labels,
     datasets: [
       {
         label: 'INR',
-        data: [1/USD,1/CAD,1/GBP,1/AED,1/EUR],
+        data: [1/USD, 1/CAD, 1/GBP, 1/AED, 1/EUR],
         backgroundColor: 'rgba(255, 99, 132, 0.5)',
       },
       
     ],
   };
-  console.log("chartData",chartData)
   return (
     <Box sx={{mt:4,p:2}}>
-      <Typography variant='h3'>INR Rate Comparison chart</Typography>
+      <Typography variant='h3'>INR Rate Chart</Typography>
       <Bar options={options} data={data} />
     </Box>
   )

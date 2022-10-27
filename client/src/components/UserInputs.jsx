@@ -1,25 +1,16 @@
 import React,{useState,useEffect,useContext} from 'react'
 import { Box,Stack,TextField,Button,Typography } from '@mui/material';
 import {validEmail} from '../utils'
-import  axios from 'axios'
+import { Axios } from '../axios/axios';
 import {ChartContext} from '../context/ChartContext'
-
-
-const options = {
-  method: 'GET',
-  url: "https://api.apilayer.com/exchangerates_data/latest?symbols=usd%2Ccad%2Cgbp%2Caed%2Ceur&base=inr",
-  headers: {
-    "apikey": "FxM99I6nOWVanOMrwaLQp9OXBdQXNAyT",
-  }
-};
 
 
 const UserInputs = () => {
 
     const [inputs,setInputs] = useState({username:"",email:"",})
     const [error,setError]=useState({})
-    const {chartData,setChartData} = useContext(ChartContext)
-
+    const {chartData,setChartData,stats,setStats} = useContext(ChartContext)
+    console.log(stats)
     useEffect(()=>{
       if(inputs.username?.length){
         setError({...error,username:false})
@@ -34,8 +25,6 @@ const UserInputs = () => {
         setInputs({...inputs,[name]:value})
     }
     const handleSubmit = (e) => {
-      console.log(error)
-      console.log(inputs)
       if(!inputs?.username){
           setError({...error,username:true})
           return
@@ -46,12 +35,19 @@ const UserInputs = () => {
         setError({...error,validEmail:true})
         return
     }
-    // axios.request(options).then(function (response) {
-    //   setChartData(response.data)
-    //   localStorage.setItem("chart-data",JSON.stringify(response.data))
-    // }).catch(function (error) {
-    //   console.error(error);
-    // });
+      Axios.get('/getRates').then(function (response) {
+        setChartData(response.data)
+        localStorage.setItem("chart-data",JSON.stringify(response.data))
+      }).catch(function (error) {
+        console.error(error);
+      });
+
+      Axios.get('/getStats').then(function (response) {
+        setStats(Object.entries(response?.data?.rates))
+        localStorage.setItem("stats",JSON.stringify(response.data))
+      }).catch(function (error) {
+        console.error(error);
+      });
     }
 
   return (

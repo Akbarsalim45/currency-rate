@@ -1,25 +1,15 @@
 import React, { useEffect ,useState} from 'react'
 import { Box, ListItemButton, ListItemText, Typography } from '@mui/material'
-import axios from 'axios'
+import {Axios} from '../axios/axios'
 
 
-let options = {
-  method: 'GET',
-  url:"https://api.apilayer.com/exchangerates_data/symbols",
-  redirect: 'follow',
-  headers: {
-    "apikey": "FxM99I6nOWVanOMrwaLQp9OXBdQXNAyT"
-  }
-};
 
 
 const CurrencyList = () => {
-  const [curList,setCurList] = useState(Object.entries(JSON.parse(localStorage.getItem('curr-symbols'))?.symbols))
-  console.log(curList)
+  const [curList,setCurList] = useState(JSON.parse(localStorage?.getItem('curr-symbols'))? Object.entries(JSON.parse(localStorage?.getItem('curr-symbols'))?.symbols):{})
   useEffect(()=>{
-    // axios.request(options).then(function (response) {
-    //   console.log(response.data)
-    //     setCurList(response.data)
+    // Axios.get('/getSymbols').then(function (response) {
+    //     setCurList(Object.entries(response.data.symbols))
     //     localStorage.setItem("curr-symbols",JSON.stringify(response.data))
     //   }).catch(function (error) {
     //     console.error(error);
@@ -28,8 +18,7 @@ const CurrencyList = () => {
   return (
     <Box sx={{height:"100vh",overflowY:"scroll"}}>
       <Typography variant='h6' >Currency Names List</Typography>
-      {  curList?.map( item =><ListItemButton component="ul" href="#simple-list">
-        {console.log(item)}
+      { Object.keys(curList)?.length &&  curList?.map( item =><ListItemButton key ={item[0]} component="ul" href="#simple-list">
            <ListItemText >{`${item[0]} - ${item[1]}`}</ListItemText>)
          </ListItemButton>)
       }
