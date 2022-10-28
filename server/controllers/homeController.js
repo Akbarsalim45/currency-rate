@@ -4,14 +4,14 @@ import fetch from 'node-fetch'
 var requestOptions = {
   method: 'GET',
   redirect: 'follow',
-  headers: {"apikey":"8gsUCl8dEShKfXDDHt3pWRmYhZQcZxsR"}
+  headers: {"apikey":"UZAfKz2fV76C2FR0xKc1KhIl8fBZoc7B"}
 };
 let prefetchData 
 
 let interaval = setInterval(async ()=>{
   const response =await fetch("https://api.apilayer.com/exchangerates_data/latest?symbols=usd%2Ccad%2Cgbp%2Caed%2Ceur&base=inr", requestOptions)
     prefetchData = await response.json()
-},10000);
+},60000);
 
 export const getRates = async (req,res) => {
     const response = !prefetchData &&  await fetch("https://api.apilayer.com/exchangerates_data/latest?symbols=usd%2Ccad%2Cgbp%2Caed%2Ceur&base=inr", requestOptions)
