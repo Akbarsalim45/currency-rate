@@ -9,8 +9,8 @@ export const ChartContext= React.createContext()
 
 const ChartWrapper = ({children}) => {
 
-  const [chartData,setChartData] = useState(JSON.parse(localStorage.getItem("chart-data")))
-  const [stats,setStats] = useState(Object.entries(JSON.parse(localStorage.getItem("stats"))?.rates))
+  const [chartData,setChartData] = useState(localStorage.getItem("chart-data") ? JSON.parse(localStorage.getItem("chart-data")):null)
+  const [stats,setStats] = useState(localStorage.getItem("stats") ? Object.entries(JSON.parse(localStorage.getItem("stats"))?.rates):null)
   return (
    <ChartContext.Provider value={{chartData,setChartData,stats,setStats}} >
        {children}

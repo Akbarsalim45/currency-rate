@@ -13,6 +13,8 @@ import {
 } from 'chart.js';
 
 import { Bar } from 'react-chartjs-2';
+import useMediaQuery from '@mui/material/useMediaQuery';
+
 
 ChartJS.register(
   CategoryScale,
@@ -24,7 +26,6 @@ ChartJS.register(
 );
 
 
-const labels = ['USD','CAD','GBP','AED','EUR'];
 
 export const options = {
   responsive: true,
@@ -34,31 +35,35 @@ export const options = {
     },
     title: {
       display: true,
-      text: 'INR ',
+      text: 'INR vs AED,CAD,EUR,USD,GBP ',
     },
   },
 };
- 
+
 
 const Chart = () => {
-
+  
   const {chartData,setChartData} = useContext(ChartContext)
+  const isLaptop = useMediaQuery('(min-width:900px)')
+  const isBigScreen = useMediaQuery('(min-width:120px)')
+  
+  const labels = chartData && Object.entries(chartData?.rates).sort((a,b) => b[1] - a[1]).map(item => item[0])
 
-  const {USD,CAD,GBP,AED,EUR} = chartData?.rates
+  const chartDataSet = chartData && Object.entries(chartData?.rates).sort((a,b) => b[1] - a[1]).map(item => (1/item[1]).toFixed(4))
   const data = {
     labels,
     datasets: [
       {
         label: 'INR',
-        data: [1/USD, 1/CAD, 1/GBP, 1/AED, 1/EUR],
+        data: chartDataSet,
         backgroundColor: 'rgba(255, 99, 132, 0.5)',
       },
       
     ],
   };
   return (
-    <Box sx={{mt:4,p:2}}>
-      <Typography variant='h3'>INR Rate Chart</Typography>
+    <Box sx={{mt:{sm:4},p:2}}>
+      <Typography variant={'h3'} sx={{fontSize:{ xs:"18px"}}}>INR Rate Chart</Typography>
       <Bar options={options} data={data} />
     </Box>
   )

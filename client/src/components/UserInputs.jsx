@@ -3,14 +3,16 @@ import { Box,Stack,TextField,Button,Typography } from '@mui/material';
 import {validEmail} from '../utils'
 import { Axios } from '../axios/axios';
 import {ChartContext} from '../context/ChartContext'
+import { format } from 'timeago.js';
 
 
 const UserInputs = () => {
 
     const [inputs,setInputs] = useState({username:"",email:"",})
     const [error,setError]=useState({})
+    const [lastClick,setLastClick]=useState("")
+    const [timeDifference,setTimeDifference]=useState("")
     const {chartData,setChartData,stats,setStats} = useContext(ChartContext)
-    console.log(stats)
     useEffect(()=>{
       if(inputs.username?.length){
         setError({...error,username:false})
@@ -48,7 +50,23 @@ const UserInputs = () => {
       }).catch(function (error) {
         console.error(error);
       });
+      setLastClick(new Date())
+      setTimeDifference(format(new Date()))
+      setInputs({username:"",email:""})
     }
+    useEffect(() => {
+      
+      if(lastClick){
+        let interavl = setInterval(() => {
+          setTimeDifference(format(lastClick))
+        }, 5000);
+        
+        return () => {
+          clearInterval(interavl)
+        }
+      }
+      }, [lastClick])
+    
 
   return (
     <Box sx={{px:2,py:2}}>
@@ -61,6 +79,7 @@ const UserInputs = () => {
               error ={error?.username ?true:null } 
               helperText={error?.username && "username is required"} 
               onChange={handleChange} 
+              value={inputs?.username}
             />
             <TextField 
               id="email" 
@@ -68,13 +87,14 @@ const UserInputs = () => {
               name="email"
               label="Email" 
               error ={error?.email || error?.validEmail ?true:null } 
-              helperText={error?.email ? "email is required" :error?.validEmail ? "invalid email" :null}
+              helperText={error?.email ? "email is required" :error?.validEmail ? "invalid email format" :null}
               onChange={handleChange} 
+              value={inputs?.email}
             />
             <Button variant="contained" onClick={handleSubmit} >Submit</Button>
 
         </Stack>
-
+        {timeDifference &&<Typography sx={{mt:{xs:2,sm:0,lg:4},color:'red',ml:{sm:0,lg:10}}} variant='h6'>{`Last updated - ${timeDifference} `}</Typography>}
     </Box>
   )
 }
